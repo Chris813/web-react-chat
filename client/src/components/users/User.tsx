@@ -1,15 +1,23 @@
-import React from "react";
-import UsersLayout from "./UsersLayout";
+import { User } from "@api/auth/types";
+import { getAllUsers } from "@api/user";
+import { useAuth } from "@context/auth-context";
+import { useArray, useMount } from "@utils/use";
+import UserList from "./UserList";
 import { EmptyState } from "@components/EmptyState";
 
-const User = () => {
+const UserPage = () => {
+  const { user } = useAuth();
+  const { value, setValue } = useArray<User | undefined>([]);
+  useMount(() => {
+    user && getAllUsers(user?.id).then((res) => setValue(res.data.users));
+  });
   return (
-    <UsersLayout>
+    <main className='h-full'>
+      <UserList items={value} />
       <div className='hidden lg:block lg:pl-80 h-full'>
         <EmptyState />
       </div>
-    </UsersLayout>
+    </main>
   );
 };
-
-export default User;
+export default UserPage;

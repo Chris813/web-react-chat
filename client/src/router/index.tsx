@@ -14,7 +14,7 @@ const GetRouters = () => {
     () => [
       {
         path: "/",
-        element: user ? <Navigate to='/chat' /> : <SignLog />,
+        element: user ? <Navigate to='/chat/conversation' /> : <SignLog />,
       },
       {
         path: "/chat",
@@ -22,7 +22,7 @@ const GetRouters = () => {
         children: [
           {
             //默认展示这个子路由
-            index: true,
+            path: "conversation",
             element: <EmptyState />,
           },
           {
@@ -39,7 +39,7 @@ const GetRouters = () => {
         path: "/setAvatar",
         element: user ? (
           user.image ? (
-            <Navigate to='/chat' />
+            <Navigate to='/chat/conversation' />
           ) : (
             <SetAvatar />
           )

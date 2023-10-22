@@ -17,7 +17,7 @@ export const useChatRoutes = () => {
       {
         label: "Chat",
         icon: HiChatAlt2,
-        path: "/",
+        path: "conversation",
         active: lastPathName === "chat" || !!conversationId,
       },
       {
