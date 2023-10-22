@@ -240,9 +240,10 @@ export const protect = async (
     if (!user) {
       return res.status(401).json({
         status: "fail",
-        msg: "用户不存在",
+        msg: "用户未授权",
       });
     }
+    req.body.user = user;
     next();
   } catch (err) {
     // if ((err as TokenExpiredError).name === "TokenExpiredError") {

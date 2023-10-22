@@ -6,6 +6,7 @@ import { useAuth } from "@context/auth-context";
 
 import { useMemo } from "react";
 import { EmptyState } from "@components/EmptyState";
+import User from "@components/users/User";
 
 const GetRouters = () => {
   const { user } = useAuth();
@@ -26,7 +27,7 @@ const GetRouters = () => {
           },
           {
             path: "users",
-            element: <EmptyState />,
+            element: <User />,
           },
           {
             path: "#",

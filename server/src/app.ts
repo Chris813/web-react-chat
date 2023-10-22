@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config();
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
-
+import convRoutes from "./routes/convRoutes";
 const app = express();
 
 // 配置 Passport 初始化和会话支持
@@ -25,6 +25,7 @@ app.use(
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/conversations", convRoutes);
 const server = app.listen(process.env.PORT, () => {
   if (process.env.PORT == null || process.env.PORT == "") {
     process.env.PORT = "3000";

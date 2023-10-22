@@ -28,7 +28,7 @@ export const DesktopItem: React.FC<DesktopItemProps> = ({
         to={href}
         className={clsx(
           `
-         group flex text-sm justify-start rounded-md p-1 gap-x-3 hover:bg-gray-100 hover:text-black
+         group flex text-sm justify-start rounded-md p-1 gap-x-3 hover:bg-gray-100 hover:text-black my-4
       `,
           !active && "text-gray-500",
           active && " bg-gray-100 text-black"
