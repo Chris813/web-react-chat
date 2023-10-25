@@ -9,6 +9,7 @@ interface HeaderProps {
 }
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
   const otherUser = useOtherUser(conversation as ConversationProp);
+  console.log("otherUser", otherUser);
   const statusText = useMemo(() => {
     if (conversation?.isGroup) {
       return `${conversation?.users?.length}人`;

@@ -33,6 +33,9 @@ export const getConversationById = async (id: string) => {
       "Content-Type": "application/json",
       Authorization: "Bearer " + getToken() || "",
     },
+    // params: {
+    //   id,
+    // },
   });
 };
 
@@ -43,4 +46,18 @@ export const getMessages = async (id: string) => {
       Authorization: "Bearer " + getToken() || "",
     },
   });
+};
+
+export const sendMessage = async (id: string, body: string) => {
+  console.log(id);
+  return await service.post(
+    `/conversations/${id}/messages`,
+    JSON.stringify({ body }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() || "",
+      },
+    }
+  );
 };

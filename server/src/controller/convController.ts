@@ -138,9 +138,8 @@ export const getConversations = async (req: Request, res: Response) => {
 };
 
 export const getConversationById = async (req: Request, res: Response) => {
-  console.log("conversation");
+  console.log(req.params);
   const conversationId = req.params.id;
-  console.log(conversationId);
   try {
     const conversation = await prisma.conversation.findUnique({
       where: {
@@ -162,8 +161,6 @@ export const getConversationById = async (req: Request, res: Response) => {
     //     msg: "无权限",
     //   });
     // }
-
-    console.log(conversation);
     return res.status(200).json({
       status: "success",
       data: {
@@ -203,6 +200,71 @@ export const getMessages = async (req: Request, res: Response) => {
     return res.status(400).json({
       status: "fail",
       msg: "获取消息失败",
+    });
+  }
+};
+
+export const sendMessages = async (req: Request, res: Response) => {
+  const conversationId = req.params.id;
+  const { body } = req.body;
+  console.log(req.body);
+  const currentUser = req.body.user;
+  try {
+    const newMessage = await prisma.message.create({
+      data: {
+        body,
+        conversation: {
+          connect: {
+            id: conversationId,
+          },
+        },
+        sender: {
+          connect: {
+            id: currentUser.id,
+          },
+        },
+        seen: {
+          connect: {
+            id: currentUser.id,
+          },
+        },
+      },
+      include: {
+        sender: true,
+        seen: true,
+      },
+    });
+    const updatedConversation = await prisma.conversation.update({
+      where: {
+        id: conversationId,
+      },
+      data: {
+        messages: {
+          connect: {
+            id: newMessage.id,
+          },
+        },
+        lastMessageAt: new Date(),
+      },
+      include: {
+        users: true,
+        messages: {
+          include: {
+            seen: true,
+          },
+        },
+      },
+    });
+    return res.status(200).json({
+      status: "success",
+      data: {
+        message: newMessage,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "发送消息失败",
     });
   }
 };

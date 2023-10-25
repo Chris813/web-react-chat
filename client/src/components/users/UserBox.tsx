@@ -18,7 +18,7 @@ const UserBox = ({ data }: UserBoxProps) => {
     creatConversation({ userId: data.id })
       .then((res) => {
         console.log(res.data);
-        navigate(`conversations/${res.data.data.conversation.id}`);
+        navigate(`/conversations/${res.data.data.conversation.id}`);
       })
       .finally(() => setIsLoading(false));
   }, [data, navigate]);
