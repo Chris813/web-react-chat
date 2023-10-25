@@ -16,3 +16,31 @@ export const creatConversation = async (data: CreateProps) => {
     },
   });
 };
+
+export const getConversations = async () => {
+  return await service.get("/conversations", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getToken() || "",
+    },
+  });
+};
+
+export const getConversationById = async (id: string) => {
+  console.log(id);
+  return await service.get(`/conversations/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getToken() || "",
+    },
+  });
+};
+
+export const getMessages = async (id: string) => {
+  return await service.get(`/conversations/${id}/messages`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getToken() || "",
+    },
+  });
+};

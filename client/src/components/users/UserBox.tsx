@@ -21,7 +21,7 @@ const UserBox = ({ data }: UserBoxProps) => {
         navigate(`conversations/${res.data.data.conversation.id}`);
       })
       .finally(() => setIsLoading(false));
-  }, [data]);
+  }, [data, navigate]);
 
   return (
     <div>
@@ -30,10 +30,9 @@ const UserBox = ({ data }: UserBoxProps) => {
         onClick={handleClick}>
         {data && <Avatar user={data} />}
         <div className='flex-1 min-w-0'>
-          <p className='text-sm font-medium text-gray-900 truncate'>
+          <p className='text-base font-medium text-gray-900 truncate'>
             {data?.name}
           </p>
-          {/* <p className='text-sm text-gray-500 truncate'>{data?.email}</p> */}
         </div>
       </div>
     </div>

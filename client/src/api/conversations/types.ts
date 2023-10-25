@@ -1,0 +1,25 @@
+import { User } from "@api/auth/types";
+
+interface MessageProp {
+  id: string;
+  sender: User;
+  senderId: string;
+  seenIds: string[];
+  seen: User[];
+  createdAt: string;
+  image: string;
+  body: string;
+}
+
+export interface ConversationProp {
+  id: string;
+  name: string;
+  isGroup: boolean;
+  members: string[];
+  messages: MessageProp[];
+  createdAt: string;
+  lastMessageAt: string;
+  messagesIds: string[];
+  userIds: string[];
+  users: User[];
+}

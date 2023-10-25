@@ -7,6 +7,8 @@ import { useAuth } from "@context/auth-context";
 import { useMemo } from "react";
 import { EmptyState } from "@components/EmptyState";
 import User from "@components/users/User";
+import Conversation from "@components/conversations/Conversation";
+import ConversationId from "@components/conversations/ConversationId";
 
 const GetRouters = () => {
   const { user } = useAuth();
@@ -23,7 +25,17 @@ const GetRouters = () => {
           {
             //默认展示这个子路由
             path: "conversation",
-            element: <EmptyState />,
+            element: <Conversation />,
+            children: [
+              {
+                index: true,
+                element: <EmptyState />,
+              },
+              {
+                path: ":id",
+                element: <ConversationId />,
+              },
+            ],
           },
           {
             path: "users",

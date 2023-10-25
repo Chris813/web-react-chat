@@ -21,7 +21,6 @@ export const DesktopItem: React.FC<DesktopItemProps> = ({
       onClick();
     }
   };
-
   return (
     <li onClick={handelClick}>
       <Link

@@ -8,8 +8,7 @@ import { useMemo } from "react";
 export const useChatRoutes = () => {
   const { pathname } = useLocation();
 
-  const lastPathName = pathname.split("/")[pathname.split("/").length - 1];
-  console.log(lastPathName);
+  const pathNames = pathname.split("/");
   const { logout } = useAuth();
   const { conversationId } = useConversation();
   const routes = useMemo(
@@ -18,13 +17,13 @@ export const useChatRoutes = () => {
         label: "Chat",
         icon: HiChatAlt2,
         path: "conversation",
-        active: lastPathName === "chat" || !!conversationId,
+        active: pathNames.includes("conversation") || !!conversationId,
       },
       {
         label: "Users",
         path: "users",
         icon: HiUsers,
-        active: lastPathName === "users",
+        active: pathNames.includes("users"),
       },
       //logout route
       {
@@ -36,7 +35,7 @@ export const useChatRoutes = () => {
         },
       },
     ],
-    [lastPathName, conversationId]
+    [pathNames, conversationId]
   );
 
   return routes;

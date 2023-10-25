@@ -98,3 +98,111 @@ export const createConversation = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getConversations = async (req: Request, res: Response) => {
+  const currentUser = req.body.user;
+  try {
+    // 最新的会话排在最前面
+    const conversations = await prisma.conversation.findMany({
+      orderBy: {
+        lastMessageAt: "desc",
+      },
+      where: {
+        userIds: {
+          has: currentUser.id,
+        },
+      },
+      include: {
+        users: true,
+        messages: {
+          include: {
+            sender: true,
+            seen: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      data: {
+        conversations,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "获取聊天失败",
+    });
+  }
+};
+
+export const getConversationById = async (req: Request, res: Response) => {
+  console.log("conversation");
+  const conversationId = req.params.id;
+  console.log(conversationId);
+  try {
+    const conversation = await prisma.conversation.findUnique({
+      where: {
+        id: conversationId,
+      },
+      include: {
+        users: true,
+      },
+    });
+    if (!conversation) {
+      return res.status(404).json({
+        status: "fail",
+        msg: "会话不存在",
+      });
+    }
+    // if (!conversation.userIds.includes(currentUser.id)) {
+    //   return res.status(403).json({
+    //     status: "fail",
+    //     msg: "无权限",
+    //   });
+    // }
+
+    console.log(conversation);
+    return res.status(200).json({
+      status: "success",
+      data: {
+        conversation,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "获取聊天失败",
+    });
+  }
+};
+
+export const getMessages = async (req: Request, res: Response) => {
+  const conversationId = req.params.id;
+  try {
+    const messages = await prisma.message.findMany({
+      where: {
+        conversationId,
+      },
+      include: {
+        sender: true,
+        seen: true,
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+    return res.status(200).json({
+      status: "success",
+      data: {
+        messages,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "获取消息失败",
+    });
+  }
+};
