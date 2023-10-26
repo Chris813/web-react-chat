@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prismadb";
-import { User } from "@prisma/client";
+import cloudinary from "cloudinary";
 export const createConversation = async (req: Request, res: Response) => {
   try {
     const { userId, isGroup, members, name } = req.body;
@@ -138,7 +138,6 @@ export const getConversations = async (req: Request, res: Response) => {
 };
 
 export const getConversationById = async (req: Request, res: Response) => {
-  console.log(req.params);
   const conversationId = req.params.id;
   try {
     const conversation = await prisma.conversation.findUnique({
@@ -204,15 +203,29 @@ export const getMessages = async (req: Request, res: Response) => {
   }
 };
 
+const cloudy = cloudinary.v2;
+cloudy.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+// const uploadImage = async (image: string) => {
+//   return await
+// };
+
 export const sendMessages = async (req: Request, res: Response) => {
   const conversationId = req.params.id;
   const { body } = req.body;
-  console.log(req.body);
+  const text = body.text;
+  const image = body.image;
   const currentUser = req.body.user;
+  const retult = await cloudy.uploader.upload(image, { folder: "chat" });
   try {
     const newMessage = await prisma.message.create({
       data: {
-        body,
+        body: text,
+        image: retult.secure_url,
         conversation: {
           connect: {
             id: conversationId,
@@ -267,4 +280,77 @@ export const sendMessages = async (req: Request, res: Response) => {
       msg: "发送消息失败",
     });
   }
+};
+
+export const seenMessages = async (req: Request, res: Response) => {
+  const conversationId = req.params.id;
+  console.log(conversationId);
+  const currentUser = req.body.user;
+  const conversation = await prisma.conversation.findUnique({
+    where: {
+      id: conversationId,
+    },
+    include: {
+      users: true,
+      messages: {
+        include: {
+          seen: true,
+        },
+      },
+    },
+  });
+  console.log(conversation);
+  if (!conversation) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "会话不存在",
+    });
+  }
+  // const lastMessage = conversation.messages[conversation.messages.length - 1];
+  // if (!lastMessage) {
+  //   return res.status(400).json({
+  //     status: "fail",
+  //     msg: "消息不存在",
+  //   });
+  // }
+  //跟新已读信息
+  // const updatedMessage = await prisma.message.update({
+  //   where: {
+  //     id: lastMessage.id,
+  //   },
+
+  //   include:{
+  //     sender:true,
+  //     seen:true
+  //   },
+  //   data: {
+  //     seen: {
+  //       connect: {
+  //         id: currentUser.id,
+  //       },
+  //     },
+  //   },
+  // });
+  //获取所有未读信息
+  const unSeenMessages = conversation.messages.filter(
+    (message) => !message.seenIds.includes(currentUser.id)
+  );
+  console.log(conversation.messages);
+  //更新所有未读信息为已读
+  const updatedMessages = await Promise.all(
+    unSeenMessages.map((message) => {
+      return prisma.message.update({
+        where: {
+          id: message.id,
+        },
+        data: {
+          seen: {
+            connect: {
+              id: currentUser.id,
+            },
+          },
+        },
+      });
+    })
+  );
 };

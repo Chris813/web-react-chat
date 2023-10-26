@@ -20,7 +20,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const otherUser = useOtherUser(data);
   const navigate = useNavigate();
   const handleClick = useCallback(() => {
-    navigate(`${data.id}`);
+    navigate(`${data.id}`, { state: { conversation: data } });
   }, [data.id, navigate]);
 
   const lastMessage = useMemo(() => {
@@ -39,6 +39,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   }, [lastMessage, user]);
 
   const lastMassageText = useMemo(() => {
+    console.log(lastMessage);
     if (lastMessage?.image) {
       return "发送了一张图片";
     }

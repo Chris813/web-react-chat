@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+
 import { config } from "dotenv";
 config();
 import authRoutes from "./routes/authRoutes";
@@ -22,7 +23,7 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/conversations", convRoutes);

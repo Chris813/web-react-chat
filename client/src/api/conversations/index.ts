@@ -33,9 +33,9 @@ export const getConversationById = async (id: string) => {
       "Content-Type": "application/json",
       Authorization: "Bearer " + getToken() || "",
     },
-    // params: {
-    //   id,
-    // },
+    params: {
+      id,
+    },
   });
 };
 
@@ -48,11 +48,28 @@ export const getMessages = async (id: string) => {
   });
 };
 
-export const sendMessage = async (id: string, body: string) => {
+interface MessageProps {
+  text?: string;
+  image?: string;
+}
+export const sendMessage = async (id: string, body: MessageProps) => {
   console.log(id);
   return await service.post(
     `/conversations/${id}/messages`,
     JSON.stringify({ body }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken() || "",
+      },
+    }
+  );
+};
+
+export const seenMessages = async (id: string) => {
+  return await service.post(
+    `/conversations/${id}/seen`,
+    {},
     {
       headers: {
         "Content-Type": "application/json",

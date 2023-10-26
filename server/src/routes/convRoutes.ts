@@ -4,6 +4,7 @@ import {
   getConversationById,
   getConversations,
   getMessages,
+  seenMessages,
   sendMessages,
 } from "../controller/convController";
 import { protect } from "./../controller/authController";
@@ -14,6 +15,7 @@ const router = express.Router();
 router.get("/", protect, getConversations);
 router.get("/:id/messages", protect, getMessages);
 router.post("/:id/messages", protect, sendMessages);
+router.post("/:id/seen", protect, seenMessages);
 router.get("/:id", protect, getConversationById);
 router.post("/", protect, createConversation);
 

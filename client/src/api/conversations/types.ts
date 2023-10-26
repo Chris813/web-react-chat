@@ -1,6 +1,6 @@
 import { User } from "@api/auth/types";
 
-interface MessageProp {
+export interface MessageProp {
   id: string;
   sender: User;
   senderId: string;
