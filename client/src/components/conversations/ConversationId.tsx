@@ -20,7 +20,7 @@ const ConversationId = () => {
     // setConversation(convRes.data.data.conversation);
     const msgRes = await getMessages(id as string);
     setMassages(msgRes.data.data.messages);
-    seenMessages(conversation.id);
+    await seenMessages(conversation.id);
   }
   useEffect(() => {
     getAndSeenMsg((conversation as ConversationProp).id);

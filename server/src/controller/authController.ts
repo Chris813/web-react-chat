@@ -70,7 +70,6 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-    console.log(email);
     if (!email || !password) {
       return res.status(400).json({
         status: "fail",
@@ -110,7 +109,6 @@ export const login = async (
 
 async function setGithubToken(code: string) {
   const tokenurl = `https://github.com/login/oauth/access_token?client_id=${process.env.GITHUB_ID}&client_secret=${process.env.GITHUB_SECRET}&code=${code}`;
-  console.log(tokenurl);
   const githubToken = await axios
     .post(tokenurl)
     .then((res) => res.data)
@@ -162,7 +160,6 @@ export const gitCallback = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("callback");
   const code = get(req.query, "code");
   if (!code) {
     return res.status(400).json({
@@ -217,7 +214,6 @@ export const protect = async (
 ) => {
   try {
     let token;
-    console.log(req.params);
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
