@@ -17,8 +17,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
   const isOwn = user?.id === message.senderId;
   const seenList = (message.seen || [])
     .filter((seener) => seener.id !== message.sender.id)
-    .map((seener) => seener.name)
-    .join(", ");
+    .map((seener) => seener.name);
 
   const container = clsx(` flex gap-3 p-4`, isOwn && "justify-end");
   const avatar = clsx(isOwn && " order-2");
@@ -53,6 +52,11 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
             <div>{message.body}</div>
           )}
         </div>
+        {isLast && isOwn && seenList.length > 0 && (
+          <div className=' text-xs font-light text-gray-500'>
+            Seen By {seenList.join(",")}
+          </div>
+        )}
       </div>
     </div>
   );

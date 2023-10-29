@@ -2,12 +2,12 @@ import { HiChatAlt2 } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
 import useConversation from "@hooks/useConversation";
 import { useAuth } from "@context/auth-context";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
 export const useChatRoutes = () => {
   const { pathname } = useLocation();
-
+  const navigate = useNavigate();
   const pathNames = pathname.split("/");
   const { logout } = useAuth();
   const { conversationId } = useConversation();
@@ -32,6 +32,7 @@ export const useChatRoutes = () => {
         icon: HiArrowLeftOnRectangle,
         onClick: () => {
           logout();
+          navigate("/");
         },
       },
     ],

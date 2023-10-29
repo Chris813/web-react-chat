@@ -21,7 +21,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const navigate = useNavigate();
   const handleClick = useCallback(() => {
     navigate(`${data.id}`, { state: { conversation: data } });
-  }, [data.id, navigate]);
+  }, [data, navigate]);
 
   const lastMessage = useMemo(() => {
     const messages = data.messages || [];
@@ -39,7 +39,6 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   }, [lastMessage, user]);
 
   const lastMassageText = useMemo(() => {
-    console.log(lastMessage);
     if (lastMessage?.image) {
       return "发送了一张图片";
     }

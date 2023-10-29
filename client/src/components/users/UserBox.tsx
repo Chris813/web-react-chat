@@ -17,9 +17,11 @@ const UserBox = ({ data }: UserBoxProps) => {
     console.log(`和${data.name}开始聊天`);
     creatConversation({ userId: data.id })
       .then((res) => {
-        console.log(res.data);
-        navigate(`/conversations/${res.data.data.conversation.id}`);
+        navigate(`/chat/conversation`, {
+          state: { id: res.data.data.conversation.id },
+        });
       })
+
       .finally(() => setIsLoading(false));
   }, [data, navigate]);
 

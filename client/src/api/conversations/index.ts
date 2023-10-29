@@ -78,3 +78,12 @@ export const seenMessages = async (id: string) => {
     }
   );
 };
+
+export const deleteConversation = async (id: string) => {
+  return await service.delete(`/conversations/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getToken() || "",
+    },
+  });
+};

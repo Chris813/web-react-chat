@@ -343,3 +343,40 @@ export const seenMessages = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deleteConversationById = async (req: Request, res: Response) => {
+  const conversationId = req.params.id;
+  const currentUser = req.body.user;
+  try {
+    const existinfConversation = await prisma.conversation.findUnique({
+      where: {
+        id: conversationId,
+      },
+      include: {
+        users: true,
+      },
+    });
+    if (!existinfConversation) {
+      return res.status(400).json({
+        status: "fail",
+        msg: "该聊天不存在",
+      });
+    }
+    const deletedConversation = await prisma.conversation.deleteMany({
+      where: {
+        id: conversationId,
+        userIds: {
+          hasSome: [currentUser.id],
+        },
+      },
+    });
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "删除会话失败",
+    });
+  }
+};
