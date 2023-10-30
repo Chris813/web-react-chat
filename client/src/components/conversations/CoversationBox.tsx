@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import Avatar from "@components/Avatar";
 import { useAuth } from "@context/auth-context";
+import AvatarGroup from "@components/AvatarGroup";
 interface ConversationBoxProps {
   // Define any props you need here
   data: ConversationProp;
@@ -55,12 +56,18 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         ` w-full relative flex items-center space-x-3 hover:bg-neutral-100 rounded-lg transition cursor-pointer p-3`,
         selected ? "bg-neutral-100" : "bg-white"
       )}>
-      <Avatar user={otherUser} kind='conversation' hasSeen={hasSeen}></Avatar>
+      {data.isGroup ? (
+        <AvatarGroup users={data.users} hasSeen={hasSeen} />
+      ) : (
+        <Avatar user={otherUser} kind='conversation' hasSeen={hasSeen} />
+      )}
+
       <div className='flex-1 min-w-0'>
         <div className='focus:outline-none'>
           <div className='flex justify-between items-center mb-1'>
             <p className=' text-base font-medium text-gray-900 truncate'>
-              {otherUser.name}
+              {!data.isGroup && otherUser?.name}
+              {data.isGroup && data.name}
             </p>
             {data.lastMessageAt && (
               <p className='text-xs text-gray-500 font-light'>

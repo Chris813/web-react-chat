@@ -2,7 +2,7 @@ import { getToken } from "@api/auth";
 import service from "@utils/requestAxios";
 
 interface CreateProps {
-  userId: string;
+  userId?: string;
   isGroup?: boolean;
   members?: string[];
   name?: string;

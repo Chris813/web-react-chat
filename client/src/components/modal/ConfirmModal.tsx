@@ -1,6 +1,6 @@
 import { deleteConversation } from "@api/conversations";
 import { Button } from "@components/basic/inputs/Button";
-import Modal from "@components/modal";
+import Modal from "@components/modal/modal";
 import { Dialog } from "@headlessui/react";
 import useConversation from "@hooks/useConversation";
 import React, { useCallback } from "react";

@@ -5,7 +5,7 @@ import { Transition, Dialog } from "@headlessui/react";
 import { IoClose, IoTrash } from "react-icons/io5";
 import Avatar from "@components/Avatar";
 import { format } from "date-fns";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "../modal/ConfirmModal";
 //props data={conversation}
 // isOpen={drawerOpen}
 // onClose={() => setDrawerOpen(false)}
