@@ -40,15 +40,13 @@ const server = app.listen(process.env.PORT, () => {
 
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   },
 });
 let Users = new Map();
 io.on("connection", (socket) => {
   socket.on("add-user", (data) => {
-    console.log(data);
-    console.log([...Users.keys()]);
     if (
       JSON.stringify(data.current) !== JSON.stringify([...Users.keys()]) ||
       [...Users.keys()].length === 0
@@ -71,7 +69,6 @@ io.on("connection", (socket) => {
       seenBy: data.seenBy,
       convId: data.convId,
     };
-    console.log(data.to);
     data.to.forEach((item: any) => {
       let receiverSocketId = Users.get(item);
       console.log(receiverSocketId);
@@ -83,7 +80,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     if (socket.id in Users.values()) {
       Users.delete(socket.id);
-      console.log(Users.keys());
       socket.emit("get-users", [...Users.keys()]);
     }
   });

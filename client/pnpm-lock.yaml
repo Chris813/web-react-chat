@@ -61,6 +61,9 @@ devDependencies:
   '@tailwindcss/forms':
     specifier: ^0.5.6
     version: registry.npmmirror.com/@tailwindcss/forms@0.5.6(tailwindcss@3.3.3)
+  '@types/node':
+    specifier: ^20.9.0
+    version: registry.npmmirror.com/@types/node@20.9.0
   '@types/react':
     specifier: ^18.2.15
     version: registry.npmmirror.com/@types/react@18.2.15
@@ -99,7 +102,7 @@ devDependencies:
     version: registry.npmmirror.com/typescript@5.0.2
   vite:
     specifier: ^4.4.5
-    version: registry.npmmirror.com/vite@4.4.5
+    version: registry.npmmirror.com/vite@4.4.5(@types/node@20.9.0)
 
 packages:
 
@@ -991,6 +994,14 @@ packages:
     version: 7.0.12
     dev: true
 
+  registry.npmmirror.com/@types/node@20.9.0:
+    resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/node/-/node-20.9.0.tgz}
+    name: '@types/node'
+    version: 20.9.0
+    dependencies:
+      undici-types: registry.npmmirror.com/undici-types@5.26.5
+    dev: true
+
   registry.npmmirror.com/@types/parse-json@4.0.1:
     resolution: {integrity: sha512-3YmXzzPAdOTVljVMkTMBdBEvlOLg2cDQaDhnnhT3nT9uDbnJzjWhKlzb+desT12Y7tGqaN6d+AbozcKzyL36Ng==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/parse-json/-/parse-json-4.0.1.tgz}
     name: '@types/parse-json'
@@ -1222,7 +1233,7 @@ packages:
       '@babel/plugin-transform-react-jsx-self': registry.npmmirror.com/@babel/plugin-transform-react-jsx-self@7.22.5(@babel/core@7.22.17)
       '@babel/plugin-transform-react-jsx-source': registry.npmmirror.com/@babel/plugin-transform-react-jsx-source@7.22.5(@babel/core@7.22.17)
       react-refresh: registry.npmmirror.com/react-refresh@0.14.0
-      vite: registry.npmmirror.com/vite@4.4.5
+      vite: registry.npmmirror.com/vite@4.4.5(@types/node@20.9.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3326,6 +3337,12 @@ packages:
     hasBin: true
     dev: true
 
+  registry.npmmirror.com/undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/undici-types/-/undici-types-5.26.5.tgz}
+    name: undici-types
+    version: 5.26.5
+    dev: true
+
   registry.npmmirror.com/update-browserslist-db@1.0.11(browserslist@4.21.10):
     resolution: {integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.0.11.tgz}
     id: registry.npmmirror.com/update-browserslist-db/1.0.11
@@ -3381,8 +3398,9 @@ packages:
     version: 1.0.2
     dev: true
 
-  registry.npmmirror.com/vite@4.4.5:
+  registry.npmmirror.com/vite@4.4.5(@types/node@20.9.0):
     resolution: {integrity: sha512-4m5kEtAWHYr0O1Fu7rZp64CfO1PsRGZlD3TAB32UmQlpd7qg15VF7ROqGN5CyqN7HFuwr7ICNM2+fDWRqFEKaA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vite/-/vite-4.4.5.tgz}
+    id: registry.npmmirror.com/vite/4.4.5
     name: vite
     version: 4.4.5
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -3411,6 +3429,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': registry.npmmirror.com/@types/node@20.9.0
       esbuild: registry.npmmirror.com/esbuild@0.18.20
       postcss: registry.npmmirror.com/postcss@8.4.29
       rollup: registry.npmmirror.com/rollup@3.29.1
