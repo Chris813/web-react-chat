@@ -19,7 +19,7 @@ import { resProps } from "@api/auth/types";
 type Variant = "REGISTER" | "LOGIN";
 const GITHUB_ID = "409f6f18c46abe64ffee";
 const githubRedirectUrl =
-  process.env.REACT_APP_BACKEND_URL + "/auth/github/callback";
+  import.meta.env.REACT_APP_BACKEND_URL + "/auth/github/callback";
 function AuthForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [variant, setVariant] = useState<Variant>("REGISTER");

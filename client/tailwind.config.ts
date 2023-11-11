@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        dswall: "url('./src/assets/images/bg.svg')",
+        dswall: "url('/client/public/bg.svg')",
       },
       backgroundColor: {
         blue: "#5865F2",

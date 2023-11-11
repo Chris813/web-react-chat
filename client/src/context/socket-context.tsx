@@ -43,7 +43,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const socketInstance = ClientIo("http://localhost:5000");
+    const socketInstance = ClientIo(import.meta.env.REACT_APP_DEV_BACKEND_URL);
     socketInstance.on("connect", () => {
       setIsConnet(true);
     });
