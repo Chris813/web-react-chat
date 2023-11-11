@@ -5,7 +5,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { creatConversation } from "@api/conversations";
 import toast from "react-hot-toast";
 import { Input } from "@components/basic/inputs/Input";
-import Select from "@components/basic/inputs/Select";
+import Select from "@components/basic/inputs/MySelect";
 import { Button } from "@components/basic/inputs/Button";
 // import { Button } from "@components/basic/inputs/Button";
 

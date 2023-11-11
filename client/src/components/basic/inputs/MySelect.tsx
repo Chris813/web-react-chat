@@ -1,23 +1,25 @@
 import { FC } from "react";
-import ReactSelect, { ActionMeta, GroupBase, MultiValue } from "react-select";
+import Select, { ActionMeta, GroupBase, MultiValue } from "react-select";
 
-// interface Option {
-//   value: string;
-//   label: string;
-// }
-
-interface SelectProps {
-  disabled?: boolean;
+interface Option {
+  value: string;
   label: string;
-  options: readonly (string | GroupBase<string>)[];
-  onChange: (
-    newValue: MultiValue<string>,
-    actionMeta: ActionMeta<string>
-  ) => void;
-  value?: string[];
 }
 
-const Select: FC<SelectProps> = ({
+type FunctionProp = (
+  newValue: MultiValue<string>,
+  actionMeta: ActionMeta<string>
+) => void;
+type StateManagerProps<Option> = {
+  // 其他属性...
+  options: Option[];
+  disabled?: boolean;
+  label: string;
+  onChange: (value: string[]) => void;
+  value?: string[];
+};
+
+const MySelect: FC<StateManagerProps<Option>> = ({
   disabled,
   label,
   options,
@@ -28,12 +30,12 @@ const Select: FC<SelectProps> = ({
     <div className=' z-[100]'>
       <label className=''>{label}</label>
       <div className=' mt-2'>
-        <ReactSelect
+        <Select
           isDisabled={disabled}
           value={value}
-          onChange={onChange}
+          onChange={onChange as unknown as FunctionProp}
           isMulti
-          options={options}
+          options={options as unknown as GroupBase<string>[]}
           menuPortalTarget={document.body}
           styles={{
             menuPortal: (base) => ({ ...base, zIndex: 9999 }),
@@ -47,4 +49,4 @@ const Select: FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default MySelect;

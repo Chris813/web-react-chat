@@ -16,7 +16,7 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
       {initialMessages.map((message, i) => (
         <MessageBox
           isLast={i === initialMessages.length - 1}
-          key={message.id}
+          key={i}
           message={message}
         />
       ))}
