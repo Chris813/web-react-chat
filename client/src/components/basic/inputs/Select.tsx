@@ -1,16 +1,19 @@
 import { FC } from "react";
-import ReactSelect from "react-select";
+import ReactSelect, { ActionMeta, GroupBase, MultiValue } from "react-select";
 
-interface Option {
-  value: string;
-  label: string;
-}
+// interface Option {
+//   value: string;
+//   label: string;
+// }
 
 interface SelectProps {
   disabled?: boolean;
   label: string;
-  options: Option[];
-  onChange: (value: string[]) => void;
+  options: readonly (string | GroupBase<string>)[];
+  onChange: (
+    newValue: MultiValue<string>,
+    actionMeta: ActionMeta<string>
+  ) => void;
   value?: string[];
 }
 
