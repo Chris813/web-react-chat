@@ -3,9 +3,9 @@ import useConversation from "@hooks/useConversation";
 import clsx from "clsx";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import CoversationBox from "./CoversationBox";
-import { useState } from "react";
 import GroupChatModal from "@components/modal/GroupChatModal";
 import { User } from "@api/auth/types";
+import { useMemo, useState } from "react";
 
 interface ConversationListProps {
   initialItems: ConversationProp[];
@@ -22,7 +22,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
   // const navigate = useNavigate();
   const { conversationId } = useConversation();
   const [isGroupModalOpen, setGroupModalOpen] = useState(false);
-
+  const conversation = useMemo(() => initialItems, [initialItems]);
+  const isOpen = useMemo(
+    () => conversation.map((item) => item.id === conversationId),
+    [conversationId, conversation]
+  );
   return (
     <>
       <GroupChatModal
@@ -32,7 +36,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       />
       <aside
         className={clsx(
-          ` fixed lg:w-80 w-full border-r border-gray-200`
+          ` fixed lg:w-80 w-full border-r border-gray-200 h-full`
           // isOpen ? "hidden" : "block h-full"
         )}>
         <div className=' px-5'>
@@ -44,11 +48,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>
-          {initialItems.map((item) => (
+          {conversation.map((item, index) => (
             <CoversationBox
-              key={item.id}
+              key={index}
               data={item}
               selected={conversationId === item.id}
+              isOpen={isOpen[index]}
             />
           ))}
         </div>

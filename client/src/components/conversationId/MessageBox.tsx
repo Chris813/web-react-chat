@@ -1,9 +1,10 @@
 import { MessageProp } from "@api/conversations/types";
 import Avatar from "@components/Avatar";
+import ImageModal from "@components/modal/ImageModal";
 import { useAuth } from "@context/auth-context";
 import clsx from "clsx";
 import { format } from "date-fns";
-import React from "react";
+import React, { useState } from "react";
 
 //the props are isLast={i===initialMessages.length-1} key={message.id} message={message}
 
@@ -18,7 +19,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
   const seenList = (message.seen || [])
     .filter((seener) => seener.id !== message.sender.id)
     .map((seener) => seener.name);
-
+  const [imageModalOpen, setImageModalOpen] = useState(false);
   const container = clsx(` flex gap-3 p-4`, isOwn && "justify-end");
   const avatar = clsx(isOwn && " order-2");
   const body = clsx(" flex flex-col gap-1", isOwn && "items-end");
@@ -27,6 +28,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
     isOwn ? "bg-sky-500 text-white" : "bg-gray-100",
     message.image ? "rounded-md p-0" : "rounded-full py-2 px-3"
   );
+  // isLast && console.log(seenList);
+  // console.log(message);
   return (
     <div className={container}>
       <div className={avatar}>
@@ -41,13 +44,21 @@ const MessageBox: React.FC<MessageBoxProps> = ({ isLast, message }) => {
         </div>
         <div className={content}>
           {message.image ? (
-            <img
-              src={message.image}
-              alt='message image'
-              height='288'
-              width='288'
-              className=' rounded-md max-w-[300px] max-h-[300px]'
-            />
+            <>
+              <ImageModal
+                src={message.image}
+                isOpen={imageModalOpen}
+                onClose={() => setImageModalOpen(false)}
+              />
+              <img
+                onClick={() => setImageModalOpen(true)}
+                src={message.image}
+                alt='message image'
+                height='288'
+                width='288'
+                className=' rounded-md max-w-[300px] max-h-[300px] object-cover cursor-pointer hover:scale-110 transition translate'
+              />
+            </>
           ) : (
             <div>{message.body}</div>
           )}

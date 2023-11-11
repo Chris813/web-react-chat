@@ -4,8 +4,17 @@ import { HiPhoto } from "react-icons/hi2";
 import MessageInput from "./MessageInput";
 import { HiPaperAirplane } from "react-icons/hi";
 import { ChangeEvent } from "react";
+import { useSocket } from "@context/socket-context";
+import { ConversationProp, MessageProp } from "@api/conversations/types";
+import { useAuth } from "@context/auth-context";
 
-const Form = ({ conversationId }: { conversationId: string | undefined }) => {
+const Form = ({
+  conversation,
+  updateMessages,
+}: {
+  conversation: ConversationProp;
+  updateMessages: React.Dispatch<React.SetStateAction<MessageProp | null>>;
+}) => {
   const {
     register,
     handleSubmit,
@@ -16,9 +25,34 @@ const Form = ({ conversationId }: { conversationId: string | undefined }) => {
       message: "",
     },
   });
+  const { socket } = useSocket();
+  const { user } = useAuth();
+  const otherUsers = conversation.users
+    .filter((u) => u.id !== user?.id)
+    .map((u) => u.id);
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setValue("message", "", { shouldValidate: true });
-    await sendMessage(conversationId as string, { text: data.message });
+    if (user) {
+      updateMessages({
+        body: data.message,
+        senderId: user.id,
+        createdAt: new Date().toISOString(),
+        sender: user,
+        seenIds: [user.id],
+        conversationId: conversation.id,
+        conversation: conversation,
+      });
+    }
+    const otherUsers = conversation.users
+      .filter((u) => u.id !== user?.id)
+      .map((u) => u.id);
+    socket.emit("send-message-one", {
+      to: otherUsers,
+      from: user?.id,
+      msg: data.message,
+      convId: conversation.id,
+    });
+    await sendMessage(conversation.id as string, { text: data.message });
   };
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     // 获取用户选择的文件
@@ -29,8 +63,24 @@ const Form = ({ conversationId }: { conversationId: string | undefined }) => {
       reader.onload = async () => {
         // 读取完成后，将结果赋值给 img
         const img = reader.result as string;
-        console.log(img);
-        await sendMessage(conversationId as string, { image: img });
+        if (user) {
+          updateMessages({
+            image: img,
+            senderId: user.id,
+            createdAt: new Date().toISOString(),
+            sender: user,
+            seenIds: [user.id],
+            conversationId: conversation.id,
+            conversation: conversation,
+          });
+        }
+        socket.emit("send-message-one", {
+          to: otherUsers,
+          from: user?.id,
+          msg: img,
+          convId: conversation.id,
+        });
+        await sendMessage(conversation.id as string, { image: img });
       };
     }
   };

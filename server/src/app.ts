@@ -1,12 +1,14 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-
+import { Server } from "socket.io";
 import { config } from "dotenv";
 config();
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import convRoutes from "./routes/convRoutes";
+import { on } from "events";
+import { slice } from "lodash";
 const app = express();
 
 // 配置 Passport 初始化和会话支持
@@ -24,6 +26,7 @@ app.use(
 );
 
 app.use(express.json({ limit: "50mb" }));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/conversations", convRoutes);
@@ -33,4 +36,43 @@ const server = app.listen(process.env.PORT, () => {
   }
   console.log(process.env.PORT);
   console.log("Server Running");
+});
+
+export const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+let Users = new Map();
+io.on("connection", (socket) => {
+  socket.on("add-user", (userId) => {
+    Users.set(userId, socket.id);
+  });
+  socket.on("send-message-one", (data) => {
+    data.to.forEach((item: any) => {
+      let receiverSocketId = Users.get(item);
+      if (receiverSocketId) {
+        socket.to(receiverSocketId).emit("receive-message", data);
+      }
+    });
+    socket.to(socket.id).emit("show-my-message", data);
+  });
+  socket.on("seen-message", (data) => {
+    const senddata = {
+      seenBy: data.seenBy,
+      convId: data.convId,
+    };
+    console.log(data.to);
+    data.to.forEach((item: any) => {
+      let receiverSocketId = Users.get(item);
+      console.log(receiverSocketId);
+      if (receiverSocketId) {
+        socket.to(receiverSocketId).emit("change-message-seen", data);
+      }
+    });
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });

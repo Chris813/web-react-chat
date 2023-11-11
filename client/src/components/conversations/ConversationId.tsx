@@ -1,53 +1,135 @@
+// import { User } from "@api/auth/types";
+import { User } from "@api/auth/types";
 import { getMessages, seenMessages } from "@api/conversations";
-import { ConversationProp } from "@api/conversations/types";
+import { ConversationProp, MessageProp } from "@api/conversations/types";
 import Body from "@components/conversationId/Body";
 import Form from "@components/conversationId/Form";
 import Header from "@components/conversationId/Header";
+import LoadingModal from "@components/modal/LoadingModal";
 import { useAuth } from "@context/auth-context";
+import { useConv } from "@context/conversation-context";
+import { useSocket } from "@context/socket-context";
+import useConversation from "@hooks/useConversation";
+// import { useSocketEvents } from "@hooks/useSocketEvents";
 
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 const ConversationId = () => {
-  const location = useLocation();
-  const conversation: ConversationProp = useMemo(
-    () => location.state?.conversation,
-    [location.state?.conversation]
+  // const location = useLocation();
+  // const conversation: ConversationProp = useMemo(
+  //   () => location.state?.conversation,
+  //   [location.state?.conversation]
+  // );
+  const { conversationId } = useConversation();
+  const { conversations, setConversation } = useConv();
+  const conversation = useMemo(
+    () =>
+      conversations?.find(
+        (item) => item.id === conversationId
+      ) as ConversationProp,
+    [conversations, conversationId]
   );
-  console.log(conversation);
   const { user } = useAuth();
-  const [massages, setMassages] = useState<ConversationProp["messages"]>([]); //聊天记录
-  const initialmessages = useMemo(() => massages, [massages]);
-  async function getMsg(id: string) {
-    // const convRes = await getConversationById(id as string);
-    // setConversation(convRes.data.data.conversation);
 
+  const { arrivedMsg } = useSocket();
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<ConversationProp["messages"]>([]); //聊天记录
+  const [sendMsg, setSendMsg] = useState<MessageProp | null>(null); //发送的消息
+  const { socket } = useSocket();
+  async function getMsg(id: string) {
+    setIsLoading(true);
     const msgRes = await getMessages(id as string);
-    setMassages(msgRes.data.data.messages);
+    setMessages(msgRes.data.data.messages);
+    setIsLoading(false);
   }
+
   const unSeenMsg = useMemo(
     () =>
       conversation.messages.filter((msg) => {
-        return !msg.seenIds.includes(user?.id as string);
+        return !msg?.seenIds?.includes(user?.id as string);
       }),
     [conversation, user]
   );
 
   useEffect(() => {
     if (unSeenMsg.length > 0) {
-      seenMessages(conversation.id);
+      seenMessages((conversation as ConversationProp).id);
+      socket.emit("seen-message", {
+        convId: (conversation as ConversationProp).id,
+        seenBy: user?.id,
+        to: conversation?.users
+          .filter((item) => item.id !== user?.id)
+          .map((item) => item.id),
+      });
+      setConversation((prev) => {
+        const index = prev?.findIndex(
+          (item) => item.id === (conversation as ConversationProp).id
+        );
+        if (index !== undefined && index !== -1 && prev) {
+          const updatedMessages = prev[index].messages.map((item) => {
+            if (item.seenIds.includes(user?.id as string)) {
+              return item;
+            }
+            return {
+              ...item,
+              seenIds: [...item.seenIds, user?.id as string],
+            };
+          });
+          return prev.map((item, idx) =>
+            idx === index ? { ...item, messages: updatedMessages } : item
+          );
+        }
+        return prev;
+      });
     }
-    setMassages([]);
-    getMsg((conversation as ConversationProp).id);
-  }, [conversation, unSeenMsg]);
+  }, [unSeenMsg]);
+
+  //接收的消息
+  useEffect(() => {
+    if (arrivedMsg) {
+      if (arrivedMsg.conversation?.id !== conversationId) return;
+      const sender = conversation.users.find(
+        (item) => item.id === arrivedMsg.senderId
+      ) as User;
+      arrivedMsg.sender = sender;
+      setMessages((prev) => [...prev, arrivedMsg]);
+    }
+  }, [arrivedMsg]);
+  useEffect(() => {
+    setMessages([]);
+    getMsg(conversationId as string);
+  }, [conversationId]);
+
+  //自己发送的消息需要显示在聊天界面以及左侧聊天栏
+  useEffect(() => {
+    if (sendMsg) {
+      setMessages((prev) => [...prev, sendMsg]);
+      setConversation((prev) => {
+        const index = prev?.findIndex((item) => item.id === conversation.id);
+        if (index !== undefined && index !== -1 && prev) {
+          const updatedMessages = [
+            ...prev[index].messages,
+            sendMsg as MessageProp,
+          ];
+          return prev.map((item, idx) =>
+            idx === index ? { ...item, messages: updatedMessages } : item
+          );
+        }
+        return prev;
+      });
+    }
+  }, [sendMsg]);
   return (
-    <div className='h-full'>
-      <div className=' h-full flex flex-col'>
-        <Header conversation={conversation} />
-        <Body initialMessages={initialmessages} />
-        <Form conversationId={conversation?.id} />
+    <>
+      {isLoading && <LoadingModal />}
+      <div className='h-full'>
+        <div className=' h-full flex flex-col'>
+          <Header conversation={conversation} />
+          <Body initialMessages={messages} />
+          <Form conversation={conversation} updateMessages={setSendMsg} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

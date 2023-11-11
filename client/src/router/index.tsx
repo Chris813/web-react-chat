@@ -9,9 +9,14 @@ import { EmptyState } from "@components/EmptyState";
 import User from "@components/users/User";
 import Conversation from "@components/conversations/Conversation";
 import ConversationId from "@components/conversations/ConversationId";
+import { useSocket } from "@context/socket-context";
 
 const GetRouters = () => {
   const { user } = useAuth();
+  const { socket } = useSocket();
+  if (user && socket) {
+    socket.emit("add-user", user.id);
+  }
   const routes = useMemo(
     () => [
       {

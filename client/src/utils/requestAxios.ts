@@ -7,7 +7,6 @@ const service = axios.create({
 });
 
 service.interceptors.request.use((config) => {
-  console.log(config);
   return config;
 });
 

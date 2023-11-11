@@ -27,7 +27,6 @@ export const getConversations = async () => {
 };
 
 export const getConversationById = async (id: string) => {
-  console.log(id);
   return await service.get(`/conversations/${id}`, {
     headers: {
       "Content-Type": "application/json",
@@ -53,7 +52,6 @@ interface MessageProps {
   image?: string;
 }
 export const sendMessage = async (id: string, body: MessageProps) => {
-  console.log(id);
   return await service.post(
     `/conversations/${id}/messages`,
     JSON.stringify({ body }),

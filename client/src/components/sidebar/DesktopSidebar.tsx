@@ -3,6 +3,7 @@ import { useChatRoutes } from "../../router/chatRouter";
 import { DesktopItem } from "./DesktopItem";
 import Avatar from "@components/Avatar";
 import { useAuth } from "@context/auth-context";
+import SocketIndicator from "@components/SocketIndicator";
 
 interface DesktopSidebarProps {
   // Define any props you need here
@@ -28,7 +29,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = () => {
           ))}
         </ul>
       </nav>
+
       <nav>
+        <div className=' pb-2'>
+          <SocketIndicator />
+        </div>
         <div className=' cursor-pointer hover:opacity-75 transition'>
           {user && <Avatar user={user} />}
         </div>

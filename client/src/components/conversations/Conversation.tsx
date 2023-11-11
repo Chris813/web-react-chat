@@ -3,15 +3,17 @@ import ConversationList from "./ConversationList";
 
 import { useMount } from "@utils/use";
 import { getConversations } from "@api/conversations";
-import { ConversationProp } from "@api/conversations/types";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getAllUsers } from "@api/user";
 import { useAuth } from "@context/auth-context";
+import { useSocket } from "@context/socket-context";
+import { User } from "@api/auth/types";
+import { useConv } from "@context/conversation-context";
 
 const Conversation: React.FC = () => {
-  const [conversations, setConversation] = useState<
-    ConversationProp[] | null
-  >();
+  // const [conversations, setConversation] = useState<
+  //   ConversationProp[] | null
+  // >();
   const navigate = useNavigate();
   const { user } = useAuth();
   const location = useLocation();
@@ -19,19 +21,50 @@ const Conversation: React.FC = () => {
     () => location.state?.id,
     [location.state?.id]
   );
+  const { arrivedMsg } = useSocket();
   const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading, conversations, setConversation } = useConv();
   useMount(async () => {
-    getConversations().then((res) => {
-      setConversation(res.data.data.conversations);
-      setIsLoading(true);
-    });
     user && getAllUsers(user?.id).then((res) => setUsers(res.data.users));
-    // console.log(res.data.data.conversations);
-    // if (conversationId) {
-    //   navigate(`${conversationId}`);
-    // }
   });
+  useEffect(() => {
+    if (arrivedMsg && conversations) {
+      let conversation = conversations.find(
+        (item) => item.id === arrivedMsg.conversationId
+      );
+      if (!conversation) {
+        setIsLoading(false);
+        getConversations().then((res) => {
+          setConversation(res.data.data.conversations);
+          setIsLoading(true);
+        });
+        conversation = conversations.find(
+          (item) => item.id === arrivedMsg.conversationId
+        );
+      }
+      let sender;
+      if (conversation) {
+        sender = conversation?.users.find(
+          (item) => item.id === arrivedMsg.senderId
+        );
+      }
+      arrivedMsg.conversation = conversation;
+      arrivedMsg.sender = sender as User;
+      setConversation((prev) => {
+        const index = prev?.findIndex(
+          (item) => item.id === arrivedMsg.conversationId
+        );
+        if (index !== undefined && index !== -1 && prev) {
+          const updatedMessages = [...prev[index].messages, arrivedMsg];
+          return prev.map((item, idx) =>
+            idx === index ? { ...item, messages: updatedMessages } : item
+          );
+        }
+        return prev;
+      });
+    }
+  }, [arrivedMsg, setConversation, setIsLoading]);
+
   useEffect(() => {
     if (conversationId && isLoading) {
       const conversation = conversations?.find(
@@ -40,6 +73,7 @@ const Conversation: React.FC = () => {
       navigate(`${conversationId}`, { state: { conversation: conversation } });
     }
   }, [conversationId, conversations, isLoading, navigate]);
+
   return (
     <main className='h-full'>
       {conversations && (

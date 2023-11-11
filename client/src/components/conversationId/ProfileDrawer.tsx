@@ -6,6 +6,7 @@ import { IoClose, IoTrash } from "react-icons/io5";
 import Avatar from "@components/Avatar";
 import { format } from "date-fns";
 import ConfirmModal from "../modal/ConfirmModal";
+import AvatarGroup from "@components/AvatarGroup";
 //props data={conversation}
 // isOpen={drawerOpen}
 // onClose={() => setDrawerOpen(false)}
@@ -76,7 +77,11 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                       <div className=' relative mt-6 flex-1 px-4 sm:px-6'>
                         <div className='flex flex-col items-center'>
                           <div className='mb-2'>
-                            <Avatar user={user} />
+                            {data.isGroup ? (
+                              <AvatarGroup users={data.users} hasSeen={false} />
+                            ) : (
+                              <Avatar user={user} />
+                            )}
                           </div>
                           <div>{title}</div>
                           <div className=' text-sm text-gray-500'>
@@ -98,6 +103,43 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           </div>
                           <div className=' w-full pb-5 pt-5'>
                             <dl className='space-y-6 px-4'>
+                              {data.isGroup && (
+                                <>
+                                  <div>
+                                    <dt className=' text-gray-500 text-sm font-medium'>
+                                      创建者
+                                    </dt>
+                                    <dd className=' mt-1 text-sm text-gray-900'>
+                                      {data?.users[0]?.name}
+                                    </dd>
+                                  </div>
+                                  <hr />
+                                  <div>
+                                    <dt>
+                                      <dt className=' text-gray-500 text-sm font-medium'>
+                                        邮箱
+                                      </dt>
+                                      <dd className=' mt-1 text-sm text-gray-900'>
+                                        {data?.users.map((user) => (
+                                          <div key={user.id}>{user.email}</div>
+                                        ))}
+                                      </dd>
+                                    </dt>
+                                  </div>
+                                  <hr />
+                                  <div>
+                                    <dt className=' text-gray-500 text-sm font-medium'>
+                                      创建于
+                                    </dt>
+                                    <dd className=' mt-1 text-sm text-gray-900'>
+                                      <time dateTime={joinedDate}>
+                                        {joinedDate}
+                                      </time>
+                                    </dd>
+                                  </div>
+                                </>
+                              )}
+
                               {!data?.isGroup && (
                                 <div>
                                   <dt className=' text-gray-500 text-sm font-medium'>

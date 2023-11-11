@@ -25,7 +25,8 @@ const Avatar: React.FC<AvatarProps> = ({ user, kind = "user", hasSeen }) => {
               ? " bg-red-700 ring-0"
               : " hidden"
             : "bg-green-500"
-        )}></span>
+        )}
+      />
     </div>
   );
 };

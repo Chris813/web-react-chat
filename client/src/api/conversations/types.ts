@@ -1,14 +1,16 @@
 import { User } from "@api/auth/types";
 
 export interface MessageProp {
-  id: string;
+  id?: string;
   sender: User;
   senderId: string;
   seenIds: string[];
-  seen: User[];
+  seen?: User[];
   createdAt: string;
-  image: string;
-  body: string;
+  image?: string;
+  body?: string;
+  conversationId: string;
+  conversation?: ConversationProp;
 }
 
 export interface ConversationProp {

@@ -11,11 +11,13 @@ interface ConversationBoxProps {
   // Define any props you need here
   data: ConversationProp;
   selected: boolean;
+  isOpen: boolean;
 }
 
 const ConversationBox: React.FC<ConversationBoxProps> = ({
   data,
   selected,
+  isOpen,
 }) => {
   const { user } = useAuth();
   const otherUser = useOtherUser(data);
@@ -23,7 +25,6 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const handleClick = useCallback(() => {
     navigate(`${data.id}`, { state: { conversation: data } });
   }, [data, navigate]);
-
   const lastMessage = useMemo(() => {
     const messages = data.messages || [];
     return messages[messages.length - 1];
@@ -32,12 +33,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const hasSeen = useMemo(() => {
     if (!lastMessage) return false; //如果没有消息，就没有已读
 
-    const seenArray = lastMessage.seen || [];
+    const seenArray = lastMessage.seenIds || [];
     if (!user || !user.id) {
       return false;
     }
-    return seenArray.filter((item) => item.id === user.id).length === 0;
-  }, [lastMessage, user]);
+    if (lastMessage.senderId === user.id) return false; //如果是自己发的消息，默认已读
+    if (isOpen) return false; //如果是打开的对话，默认已读
+    return seenArray.filter((item) => item === user.id).length === 0;
+  }, [lastMessage, user, isOpen]);
 
   const lastMassageText = useMemo(() => {
     if (lastMessage?.image) {

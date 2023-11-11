@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../libs/prismadb";
 import cloudinary from "cloudinary";
-import { ca } from "date-fns/locale";
+
 export const createConversation = async (req: Request, res: Response) => {
   try {
     const { userId, isGroup, members, name } = req.body;

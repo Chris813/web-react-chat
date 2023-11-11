@@ -1,6 +1,7 @@
 import { User } from "@api/auth/types";
 import { creatConversation } from "@api/conversations";
 import Avatar from "@components/Avatar";
+import LoadingModal from "@components/modal/LoadingModal";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,9 +18,7 @@ const UserBox = ({ data }: UserBoxProps) => {
     console.log(`和${data.name}开始聊天`);
     creatConversation({ userId: data.id })
       .then((res) => {
-        navigate(`/chat/conversation`, {
-          state: { id: res.data.data.conversation.id },
-        });
+        navigate(`/chat/conversation/${res.data.data.conversation.id}`);
       })
 
       .finally(() => setIsLoading(false));
@@ -27,6 +26,7 @@ const UserBox = ({ data }: UserBoxProps) => {
 
   return (
     <div>
+      {isLoading && <LoadingModal />}
       <div
         className='flex items-center space-x-3 p-3 cursor-pointer hover:bg-neutral-100 transition rounded-lg '
         onClick={handleClick}>

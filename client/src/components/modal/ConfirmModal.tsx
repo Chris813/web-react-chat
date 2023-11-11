@@ -7,6 +7,7 @@ import React, { useCallback } from "react";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import LoadingModal from "./LoadingModal";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -29,35 +30,39 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [onClose]);
+  }, [onClose, navigate, conversationId]);
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className=' flex'>
-        <div className=' flex bg-red-100 rounded-full h-12 w-12 items-center justify-center'>
-          <FiAlertTriangle className=' h-6 w-6 text-red-600' />
-        </div>
-        <div className=' m-3'>
-          <Dialog.Title
-            as='h3'
-            className=' text-base font-semibold leading-6 text-gray-900'>
-            删除聊天
-          </Dialog.Title>
-          <div className=' mt-2'>
-            <p className=' text-sm text-gray-500'>
-              确定要删除该聊天吗？删除后无法恢复
-            </p>
+    <>
+      {isLoading && <LoadingModal />}
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <div className=' flex'>
+          <div className=' flex bg-red-100 rounded-full h-12 w-12 items-center justify-center'>
+            <FiAlertTriangle className=' h-6 w-6 text-red-600' />
+          </div>
+          <div className=' m-3'>
+            <Dialog.Title
+              as='h3'
+              className=' text-base font-semibold leading-6 text-gray-900'>
+              删除聊天
+            </Dialog.Title>
+            <div className=' mt-2'>
+              <p className=' text-sm text-gray-500'>
+                确定要删除该聊天吗？删除后无法恢复
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div className=' mt-5 flex flex-row-reverse'>
-        <Button disabled={isLoading} danger onClick={onDelete}>
-          删除
-        </Button>
-        <Button onClick={onClose} secondary>
-          取消
-        </Button>
-      </div>
-    </Modal>
+        <div className=' mt-5 flex flex-row-reverse'>
+          <Button disabled={isLoading} danger onClick={onDelete}>
+            删除
+          </Button>
+          <Button onClick={onClose} secondary>
+            取消
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 };
 

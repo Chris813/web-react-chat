@@ -15,6 +15,7 @@
     "@types/react-redux": "^7.1.26",
     "axios": "^1.5.0",
     "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
@@ -23,7 +24,9 @@
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.15.0",
     "react-select": "^5.7.7",
-    "react-use-session": "^1.2.0"
+    "react-spinners": "^0.13.8",
+    "react-use-session": "^1.2.0",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.6",
