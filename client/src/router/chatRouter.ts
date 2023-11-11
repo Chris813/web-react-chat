@@ -33,8 +33,8 @@ export const useChatRoutes = () => {
         path: "#",
         icon: HiArrowLeftOnRectangle,
         onClick: () => {
-          socket.emit("disconnect");
           logout();
+          socket.emit("logout");
           navigate("/");
         },
       },

@@ -7,16 +7,15 @@ config();
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import convRoutes from "./routes/convRoutes";
-import { on } from "events";
-import { slice } from "lodash";
 const app = express();
 
 // 配置 Passport 初始化和会话支持
 // app.use(passport.initialize());
 // app.use(passport.session());
+console.log(process.env.CLIENT_URL);
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
@@ -53,9 +52,11 @@ io.on("connection", (socket) => {
     ) {
       Users.set(data.userId, socket.id);
       socket.emit("get-users", [...Users.keys()]);
+      console.log("user connected", Users);
     }
   });
   socket.on("send-message-one", (data) => {
+    console.log(data);
     data.to.forEach((item: any) => {
       let receiverSocketId = Users.get(item);
       if (receiverSocketId) {
@@ -77,10 +78,17 @@ io.on("connection", (socket) => {
       }
     });
   });
-  socket.on("disconnect", () => {
-    if (socket.id in Users.values()) {
-      Users.delete(socket.id);
+  socket.on("logout", () => {
+    console.log("user disconnected", socket.id);
+    const user = [...Users.entries()].find((item) => item[1] === socket.id);
+    console.log(user);
+    if (user) {
+      console.log("user disconnected", user);
+      Users.delete(user[0]);
       socket.emit("get-users", [...Users.keys()]);
     }
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });

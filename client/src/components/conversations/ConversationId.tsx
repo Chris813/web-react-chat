@@ -52,10 +52,10 @@ const ConversationId = () => {
 
   const unSeenMsg = useMemo(
     () =>
-      conversation.messages.filter((msg) => {
+      messages.filter((msg) => {
         return !msg?.seenIds?.includes(user?.id as string);
       }),
-    [conversation, user]
+    [messages, user]
   );
 
   useEffect(() => {
