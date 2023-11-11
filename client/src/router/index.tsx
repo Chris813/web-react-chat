@@ -13,9 +13,9 @@ import { useSocket } from "@context/socket-context";
 
 const GetRouters = () => {
   const { user } = useAuth();
-  const { socket } = useSocket();
+  const { socket, onlineUsers } = useSocket();
   if (user && socket) {
-    socket.emit("add-user", user.id);
+    socket.emit("add-user", { current: onlineUsers, userId: user.id });
   }
   const routes = useMemo(
     () => [

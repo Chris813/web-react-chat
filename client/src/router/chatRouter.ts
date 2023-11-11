@@ -4,6 +4,7 @@ import useConversation from "@hooks/useConversation";
 import { useAuth } from "@context/auth-context";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
+import { useSocket } from "@context/socket-context";
 
 export const useChatRoutes = () => {
   const { pathname } = useLocation();
@@ -11,6 +12,7 @@ export const useChatRoutes = () => {
   const pathNames = pathname.split("/");
   const { logout } = useAuth();
   const { conversationId } = useConversation();
+  const { socket } = useSocket();
   const routes = useMemo(
     () => [
       {
@@ -31,6 +33,7 @@ export const useChatRoutes = () => {
         path: "#",
         icon: HiArrowLeftOnRectangle,
         onClick: () => {
+          socket.emit("disconnect");
           logout();
           navigate("/");
         },

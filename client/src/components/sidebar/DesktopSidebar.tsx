@@ -35,7 +35,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = () => {
           <SocketIndicator />
         </div>
         <div className=' cursor-pointer hover:opacity-75 transition'>
-          {user && <Avatar user={user} />}
+          {user && <Avatar user={user} isOnline />}
         </div>
       </nav>
     </div>

@@ -6,9 +6,15 @@ interface AvatarProps {
   user: User;
   kind?: "conversation" | "user";
   hasSeen?: boolean;
+  isOnline?: boolean;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ user, kind = "user", hasSeen }) => {
+const Avatar: React.FC<AvatarProps> = ({
+  user,
+  kind = "user",
+  hasSeen,
+  isOnline,
+}) => {
   return (
     <div className=' relative'>
       <div className='flex-shrink-0'>
@@ -24,7 +30,9 @@ const Avatar: React.FC<AvatarProps> = ({ user, kind = "user", hasSeen }) => {
             ? hasSeen
               ? " bg-red-700 ring-0"
               : " hidden"
-            : "bg-green-500"
+            : isOnline
+            ? "bg-green-500"
+            : "bg-red-500"
         )}
       />
     </div>

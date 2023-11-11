@@ -8,17 +8,19 @@ import ProfileDrawer from "./ProfileDrawer";
 import AvatarGroup from "@components/AvatarGroup";
 interface HeaderProps {
   conversation: ConversationProp | null;
+  isOnline?: boolean;
 }
-const Header: React.FC<HeaderProps> = ({ conversation }) => {
+const Header: React.FC<HeaderProps> = ({ conversation, isOnline }) => {
   const otherUser = useOtherUser(conversation as ConversationProp);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const statusText = useMemo(() => {
     if (conversation?.isGroup) {
       return `${conversation?.users?.length}人`;
+    } else {
+      return isOnline ? "在线" : "离线";
     }
-    return "Active";
-  }, [conversation]);
+  }, [conversation, isOnline]);
   return (
     <>
       <ProfileDrawer
@@ -37,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           {conversation && conversation.isGroup ? (
             <AvatarGroup users={conversation.users} hasSeen={false} />
           ) : (
-            <Avatar user={otherUser} />
+            <Avatar user={otherUser} isOnline={isOnline} />
           )}
           <div className=' flex flex-col'>
             <div>{conversation?.name || otherUser.name}</div>

@@ -46,8 +46,16 @@ export const io = new Server(server, {
 });
 let Users = new Map();
 io.on("connection", (socket) => {
-  socket.on("add-user", (userId) => {
-    Users.set(userId, socket.id);
+  socket.on("add-user", (data) => {
+    console.log(data);
+    console.log([...Users.keys()]);
+    if (
+      JSON.stringify(data.current) !== JSON.stringify([...Users.keys()]) ||
+      [...Users.keys()].length === 0
+    ) {
+      Users.set(data.userId, socket.id);
+      socket.emit("get-users", [...Users.keys()]);
+    }
   });
   socket.on("send-message-one", (data) => {
     data.to.forEach((item: any) => {
@@ -73,6 +81,10 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    if (socket.id in Users.values()) {
+      Users.delete(socket.id);
+      console.log(Users.keys());
+      socket.emit("get-users", [...Users.keys()]);
+    }
   });
 });

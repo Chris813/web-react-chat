@@ -35,7 +35,14 @@ const ConversationId = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ConversationProp["messages"]>([]); //聊天记录
   const [sendMsg, setSendMsg] = useState<MessageProp | null>(null); //发送的消息
-  const { socket } = useSocket();
+  const { socket, onlineUsers } = useSocket();
+  const isOnline = useMemo(
+    () =>
+      onlineUsers?.includes(
+        conversation?.users.find((item) => item.id !== user?.id)?.id as string
+      ),
+    [onlineUsers, conversation, user]
+  );
   async function getMsg(id: string) {
     setIsLoading(true);
     const msgRes = await getMessages(id as string);
@@ -124,7 +131,7 @@ const ConversationId = () => {
       {isLoading && <LoadingModal />}
       <div className='h-full'>
         <div className=' h-full flex flex-col'>
-          <Header conversation={conversation} />
+          <Header conversation={conversation} isOnline={isOnline} />
           <Body initialMessages={messages} />
           <Form conversation={conversation} updateMessages={setSendMsg} />
         </div>
