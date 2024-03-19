@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/app.ts"
+    "start:dev": "nodemon src/app.ts",
+    "start:prod": "cross-env NODE_ENV=production nodemon src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "cloudinary": "^1.41.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "http-proxy": "^1.18.1",

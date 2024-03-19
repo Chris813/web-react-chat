@@ -18,8 +18,8 @@ import { resProps } from "@api/auth/types";
 
 type Variant = "REGISTER" | "LOGIN";
 const GITHUB_ID = "409f6f18c46abe64ffee";
-const githubRedirectUrl =
-  import.meta.env.REACT_APP_BACKEND_URL + "/auth/github/callback";
+
+// import.meta.env.REACT_APP_BACKEND_URL + "/auth/github/callback";
 function AuthForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [variant, setVariant] = useState<Variant>("REGISTER");
@@ -89,6 +89,8 @@ function AuthForm() {
     console.log(action);
     try {
       if (action === "github") {
+        const githubRedirectUrl = "http://localhost:5000/auth/github/callback";
+        console.log(githubRedirectUrl);
         const target = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${githubRedirectUrl}?path=/&scope=user:email`;
         window.location.href = target;
         // const res = await axios.get(githubRoute);

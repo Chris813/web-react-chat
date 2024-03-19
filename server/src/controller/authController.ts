@@ -9,8 +9,6 @@ import { get } from "lodash";
 const CLIENT_URL = "http://localhost:3000";
 import axios from "axios";
 import quereystring from "querystring";
-import { User } from "@prisma/client";
-import { IGetUserAuthInfoRequest } from "./types";
 
 const COOKIE_NAME = "chat-app-token";
 
@@ -185,6 +183,7 @@ export const gitCallback = async (
     };
     res.cookie(COOKIE_NAME, data, cookieOptions);
   }
+  console.log(CLIENT_URL);
   res.redirect(CLIENT_URL);
 };
 

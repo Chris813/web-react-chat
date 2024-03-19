@@ -14,9 +14,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = () => {
   const { user } = useAuth();
   //   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <div className=' lg:fixed lg:inset-y-0 lg:left-0 lg:z-40  xl:px-6 lg:bg-white lg:border-r-[1px] lg:pb-4 lg:flex lg:px-4 lg:flex-col justify-between'>
+    <div className=' lg:fixed lg:inset-y-0 lg:left-0 lg:z-40  xl:px-6 lg:bg-white lg:border-r-[1px] lg:pb-4 lg:flex lg:px-4 lg:flex-col justify-between max-lg:fixed max-lg:bottom-0 max-lg:w-full'>
       <nav className=' mt-4 flex flex-col justify-between'>
-        <ul role='list' className=' flex flex-col items-center space-y-1 pt-4'>
+        <ul
+          role='list'
+          className=' flex flex-col items-center space-y-1 pt-4 max-lg:flex-row max-lg:justify-around'>
           {routes.map((route) => (
             <DesktopItem
               key={route.label}
@@ -30,7 +32,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = () => {
         </ul>
       </nav>
 
-      <nav>
+      <nav className=' max-lg:hidden'>
         <div className=' pb-2'>
           <SocketIndicator />
         </div>

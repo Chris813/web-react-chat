@@ -79,7 +79,7 @@ const Conversation: React.FC = () => {
       {conversations && (
         <ConversationList initialItems={conversations} users={users} />
       )}
-      <div className='hidden lg:block lg:pl-80 h-full'>
+      <div className='lg:block lg:pl-80 h-full sm:block'>
         <Outlet />
       </div>
     </main>

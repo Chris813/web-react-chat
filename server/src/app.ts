@@ -12,18 +12,25 @@ const app = express();
 // 配置 Passport 初始化和会话支持
 // app.use(passport.initialize());
 // app.use(passport.session());
-console.log(process.env.CLIENT_URL);
+
+let client_url;
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV == "development") {
+  client_url = process.env.DEV_CLIENT_URL;
+  app.use(
+    morgan(":method :url :status :res[content-length] - :response-time ms")
+  );
+} else {
+  client_url = process.env.PROD_CLIENT_URL;
+}
+console.log(client_url);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: client_url,
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms")
-);
-
 app.use(express.json({ limit: "50mb" }));
 
 app.use("/api/auth", authRoutes);
@@ -37,9 +44,10 @@ const server = app.listen(process.env.PORT, () => {
   console.log("Server Running");
 });
 
+//socket.io服务器
 export const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: client_url,
     credentials: true,
   },
 });
@@ -52,11 +60,9 @@ io.on("connection", (socket) => {
     ) {
       Users.set(data.userId, socket.id);
       socket.emit("get-users", [...Users.keys()]);
-      console.log("user connected", Users);
     }
   });
   socket.on("send-message-one", (data) => {
-    console.log(data);
     data.to.forEach((item: any) => {
       let receiverSocketId = Users.get(item);
       if (receiverSocketId) {
@@ -72,7 +78,6 @@ io.on("connection", (socket) => {
     };
     data.to.forEach((item: any) => {
       let receiverSocketId = Users.get(item);
-      console.log(receiverSocketId);
       if (receiverSocketId) {
         socket.to(receiverSocketId).emit("change-message-seen", data);
       }
@@ -81,7 +86,6 @@ io.on("connection", (socket) => {
   socket.on("logout", () => {
     console.log("user disconnected", socket.id);
     const user = [...Users.entries()].find((item) => item[1] === socket.id);
-    console.log(user);
     if (user) {
       console.log("user disconnected", user);
       Users.delete(user[0]);
