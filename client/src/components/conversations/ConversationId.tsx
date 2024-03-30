@@ -15,11 +15,6 @@ import useConversation from "@hooks/useConversation";
 import { useEffect, useMemo, useState } from "react";
 
 const ConversationId = () => {
-  // const location = useLocation();
-  // const conversation: ConversationProp = useMemo(
-  //   () => location.state?.conversation,
-  //   [location.state?.conversation]
-  // );
   const { conversationId } = useConversation();
   const { conversations, setConversation } = useConv();
   const conversation = useMemo(
@@ -94,7 +89,7 @@ const ConversationId = () => {
   //接收的消息
   useEffect(() => {
     if (arrivedMsg) {
-      if (arrivedMsg.conversation?.id !== conversationId) return;
+      if (arrivedMsg.conversationId !== conversationId) return;
       const sender = conversation.users.find(
         (item) => item.id === arrivedMsg.senderId
       ) as User;
@@ -131,9 +126,13 @@ const ConversationId = () => {
       {isLoading && <LoadingModal />}
       <div className='h-full'>
         <div className=' h-full flex flex-col'>
-          <Header conversation={conversation} isOnline={isOnline} />
+          {conversation && (
+            <Header conversation={conversation} isOnline={isOnline} />
+          )}
           <Body initialMessages={messages} />
-          <Form conversation={conversation} updateMessages={setSendMsg} />
+          {conversation && (
+            <Form conversation={conversation} updateMessages={setSendMsg} />
+          )}
         </div>
       </div>
     </>

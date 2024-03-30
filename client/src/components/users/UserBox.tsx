@@ -2,7 +2,7 @@ import { User } from "@api/auth/types";
 import { creatConversation } from "@api/conversations";
 import Avatar from "@components/Avatar";
 import LoadingModal from "@components/modal/LoadingModal";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface UserBoxProps {
@@ -19,14 +19,14 @@ const UserBox = ({ data, isOnline }: UserBoxProps) => {
     console.log(`和${data.name}开始聊天`);
     creatConversation({ userId: data.id })
       .then((res) => {
+        // setConversation(prev=>{
+        //   const immu = prev ? [...prev] : [];
+        //   return [...immu,res]
+        // })
         navigate(`/chat/conversation/${res.data.data.conversation.id}`);
       })
-
       .finally(() => setIsLoading(false));
   }, [data, navigate]);
-  useEffect(() => {
-    console.log(data.name, isOnline);
-  }, [data, isOnline]);
   return (
     <div>
       {isLoading && <LoadingModal />}

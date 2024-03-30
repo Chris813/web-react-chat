@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ConversationList from "./ConversationList";
 
 import { useMount } from "@utils/use";
 import { getConversations } from "@api/conversations";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { getAllUsers } from "@api/user";
 import { useAuth } from "@context/auth-context";
 import { useSocket } from "@context/socket-context";
@@ -14,18 +14,17 @@ const Conversation: React.FC = () => {
   // const [conversations, setConversation] = useState<
   //   ConversationProp[] | null
   // >();
-  const navigate = useNavigate();
   const { user } = useAuth();
-  const location = useLocation();
-  const conversationId = useMemo(
-    () => location.state?.id,
-    [location.state?.id]
-  );
+
   const { arrivedMsg } = useSocket();
   const [users, setUsers] = useState([]);
-  const { isLoading, setIsLoading, conversations, setConversation } = useConv();
+  const { setIsLoading, conversations, setConversation } = useConv();
   useMount(async () => {
     user && getAllUsers(user?.id).then((res) => setUsers(res.data.users));
+    getConversations().then((res) => {
+      setConversation(res.data.data.conversations);
+      setIsLoading(true);
+    });
   });
   useEffect(() => {
     if (arrivedMsg && conversations) {
@@ -64,15 +63,6 @@ const Conversation: React.FC = () => {
       });
     }
   }, [arrivedMsg, setConversation, setIsLoading]);
-
-  useEffect(() => {
-    if (conversationId && isLoading) {
-      const conversation = conversations?.find(
-        (item) => item.id === conversationId
-      );
-      navigate(`${conversationId}`, { state: { conversation: conversation } });
-    }
-  }, [conversationId, conversations, isLoading, navigate]);
 
   return (
     <main className='h-full'>

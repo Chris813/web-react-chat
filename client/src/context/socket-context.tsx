@@ -55,7 +55,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     socketInstance.on("receive-message", receiveMessagehandler);
     socketInstance.on("get-users", (data: any) => {
-      console.log(data);
       setOnlineUsers(data);
     });
     return () => {
