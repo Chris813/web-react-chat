@@ -10,9 +10,11 @@ import User from "@components/users/User";
 import Conversation from "@components/conversations/Conversation";
 import ConversationId from "@components/conversations/ConversationId";
 import { useSocket } from "@context/socket-context";
+import * as auth from "../api/auth/index";
 
 const GetRouters = () => {
   const { user } = useAuth();
+  const token = auth.getToken();
   const { socket, onlineUsers } = useSocket();
   if (user && socket) {
     socket.emit("add-user", { current: onlineUsers, userId: user.id });
@@ -21,11 +23,11 @@ const GetRouters = () => {
     () => [
       {
         path: "/",
-        element: user ? <Navigate to='/chat/conversation' /> : <SignLog />,
+        element: token ? <Navigate to='/chat/conversation' /> : <SignLog />,
       },
       {
         path: "/chat",
-        element: user ? <Chat /> : <Navigate to='/' />,
+        element: token ? <Chat /> : <Navigate to='/' />,
         children: [
           {
             //默认展示这个子路由
@@ -65,7 +67,7 @@ const GetRouters = () => {
         ),
       },
     ],
-    [user]
+    [user, token]
   );
   const routeResult = useRoutes(routes);
   return routeResult;

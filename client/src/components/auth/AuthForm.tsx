@@ -2,9 +2,9 @@ import { useCallback, useState } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { Input } from "../basic/inputs/Input";
 import { Button } from "../basic/inputs/Button";
-import { AuthSocialButton } from "./AuthSocialButton";
-import { BsGithub } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
+// import { AuthSocialButton } from "./AuthSocialButton";
+// import { BsGithub } from "react-icons/bs";
+// import { FcGoogle } from "react-icons/fc";
 // import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ import { AxiosError } from "axios";
 import { resProps } from "@api/auth/types";
 
 type Variant = "REGISTER" | "LOGIN";
-const GITHUB_ID = "409f6f18c46abe64ffee";
+// const GITHUB_ID = "409f6f18c46abe64ffee";
 
 // import.meta.env.REACT_APP_BACKEND_URL + "/auth/github/callback";
 function AuthForm() {
@@ -84,28 +84,28 @@ function AuthForm() {
     }
     setIsLoading(false);
   };
-  const socialAction = async (action: string) => {
-    setIsLoading(true);
-    console.log(action);
-    try {
-      if (action === "github") {
-        const githubRedirectUrl = "http://localhost:5000/auth/github/callback";
-        console.log(githubRedirectUrl);
-        const target = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${githubRedirectUrl}?path=/&scope=user:email`;
-        window.location.href = target;
-        // const res = await axios.get(githubRoute);
-        // console.log(res);
-      } else if (action === "google") {
-        // const res = await axios.get(googleRoute);
-        // console.log(res);
-      }
-    } catch (err) {
-      const error = err as Error;
-      console.log(error);
-      // toast.error((error.response?.data as resProps).msg || "第三方登录失败");
-    }
-    setIsLoading(false);
-  };
+  // const socialAction = async (action: string) => {
+  //   setIsLoading(true);
+  //   console.log(action);
+  //   try {
+  //     if (action === "github") {
+  //       const githubRedirectUrl = "http://localhost:5000/auth/github/callback";
+  //       console.log(githubRedirectUrl);
+  //       const target = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${githubRedirectUrl}?path=/&scope=user:email`;
+  //       window.location.href = target;
+  //       // const res = await axios.get(githubRoute);
+  //       // console.log(res);
+  //     } else if (action === "google") {
+  //       // const res = await axios.get(googleRoute);
+  //       // console.log(res);
+  //     }
+  //   } catch (err) {
+  //     const error = err as Error;
+  //     console.log(error);
+  //     // toast.error((error.response?.data as resProps).msg || "第三方登录失败");
+  //   }
+  //   setIsLoading(false);
+  // };
 
   return (
     <div className=' mt-8'>
@@ -149,7 +149,7 @@ function AuthForm() {
           </div>
         </form>
         <div className='mt-6'>
-          <div className='relative'>
+          {/* <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
               <div className=' w-full border-gray-300 border-t'></div>
             </div>
@@ -158,8 +158,8 @@ function AuthForm() {
                 Or continue with
               </span>
             </div>
-          </div>
-          <div className='flex justify-center mt-6'>
+          </div> */}
+          {/* <div className='flex justify-center mt-6'>
             <AuthSocialButton
               icon={BsGithub}
               onClick={() => socialAction("github")}
@@ -168,7 +168,7 @@ function AuthForm() {
               icon={FcGoogle}
               onClick={() => socialAction("google")}
             />
-          </div>
+          </div> */}
           <div className=' mt-6 flex justify-center text-gray-500'>
             <div>{variant === "LOGIN" ? "还没注册？" : "已有账号？"}</div>
             <div onClick={toggleVariant} className='underline cursor-pointer'>
